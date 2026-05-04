@@ -8,6 +8,7 @@ Paul Licameli split from AudacityProject.cpp
 
 **********************************************************************/
 #include "ProjectWindow.h"
+#include "ui-facade/TenacityGuiFacadeSmokeTest.h"
 
 #include "ActiveProject.h"
 #include "AllThemeResources.h"
@@ -840,6 +841,7 @@ void ProjectWindow::UpdateLayout()
 #endif
    SetMinSize( wxSize(250, 250));
    SetMaxSize( wxSize(20000, 20000));
+   tenacity::ui_facade::SmokeTestGuiFacade(project);
 }
 
 bool ProjectWindow::IsIconized() const
