@@ -15,6 +15,12 @@ set( CMAKE_ENABLE_EXPORTS ON )
 add_executable( ${TARGET} )
 add_dependencies( ${TARGET} locale )
 
+target_sources( ${TARGET}
+   PRIVATE
+      ui-facade/TenacityGuiFacade.cpp
+      ui-facade/TenacityGuiFacade.h
+)
+
 if (USE_NYQUIST)
     add_dependencies( ${TARGET} nyquist )
     add_dependencies( ${TARGET} plug-ins )
@@ -1223,6 +1229,7 @@ set( TENACITY_LIBRARIES
     lib-import-export-interface
     lib-export-ui-interface
     lib-wave-track-paint-interface
+    lib-wave-track-settings
     lib-wave-track-fft-interface
     lib-music-information-retrieval-interface
     lib-preference-pages-interface
