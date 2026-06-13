@@ -19,6 +19,8 @@ target_sources( ${TARGET}
    PRIVATE
       ui-facade/TenacityGuiFacade.cpp
       ui-facade/TenacityGuiFacade.h
+      ui-facade/TenacityGuiFacadeSmokeTest.cpp
+      ui-facade/TenacityGuiFacadeSmokeTest.h
 )
 
 if (USE_NYQUIST)

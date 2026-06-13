@@ -1,45 +1,31 @@
 /**********************************************************************
 
-Tenacity GUI Facade smoke test
+Tenacity GUI Facade
 
 **********************************************************************/
 
-#include "ui-facade/TenacityGuiFacadeSmokeTest.h"
-
 #include "ui-facade/TenacityGuiFacade.h"
-
-#include <wx/log.h>
 
 namespace tenacity::ui_facade {
 
-void SmokeTestGuiFacade(AudacityProject& project)
+TenacityGuiFacade::TenacityGuiFacade(AudacityProject& project)
+   : mProject{ project }
 {
-#if defined(_DEBUG)
-   static bool once = false;
-   if (once)
-      return;
-   once = true;
+}
 
-   TenacityGuiFacade facade{ project };
+ViewportGeometry TenacityGuiFacade::GetViewportGeometry() const
+{
+   return {};
+}
 
-   const auto geometry = facade.GetViewportGeometry();
-   const auto selection = facade.GetSelection();
-   const auto transport = facade.FormatTransport();
+SelectionState TenacityGuiFacade::GetSelection() const
+{
+   return {};
+}
 
-   wxLogMessage(
-      "TenacityGuiFacade smoke test: viewport=%dx%d hpos=%d hrange=%d "
-      "selection=[%.3f, %.3f] transport=%s",
-      geometry.widthPx,
-      geometry.heightPx,
-      geometry.horizontalThumbPosition,
-      geometry.horizontalRange,
-      selection.startSeconds,
-      selection.endSeconds,
-      transport
-   );
-#else
-   (void)project;
-#endif
+TransportState TenacityGuiFacade::GetTransportState() const
+{
+   return {};
 }
 
 } // namespace tenacity::ui_facade
