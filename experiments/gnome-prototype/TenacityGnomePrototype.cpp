@@ -6,6 +6,11 @@
 #include <string>
 #include <vector>
 
+#include "PrototypeModel.h"
+
+using tenacity::gnome_prototype::ProjectViewModel;
+using tenacity::gnome_prototype::TrackViewModel;
+
 namespace {
 
 constexpr double PI = 3.14159265358979323846;
@@ -299,9 +304,7 @@ GtkWidget *make_track_controls()
 }
 
 GtkWidget *make_track_lane(
-    const char *track_name,
-    int track_number,
-    unsigned seed,
+    const TrackViewModel& track,
     GtkAdjustment *shared_adjustment)
 {
     GtkWidget *shell = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -323,13 +326,13 @@ GtkWidget *make_track_lane(
     GtkWidget *header_top = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
     gtk_box_append(GTK_BOX(header), header_top);
 
-    std::string title = "Track " + std::to_string(track_number);
+    std::string title = "Track " + std::to_string(track.number);
     GtkWidget *pill = gtk_label_new(title.c_str());
     gtk_widget_add_css_class(pill, "track-title-pill");
     gtk_box_append(GTK_BOX(header_top), pill);
     gtk_box_append(GTK_BOX(header_top), icon_button("view-more-symbolic", "Track options"));
 
-    GtkWidget *name = gtk_label_new(track_name);
+    GtkWidget *name = gtk_label_new(track.name.c_str());
     gtk_label_set_xalign(GTK_LABEL(name), 0.0f);
     gtk_label_set_ellipsize(GTK_LABEL(name), PANGO_ELLIPSIZE_END);
     gtk_widget_add_css_class(name, "muted");
@@ -347,8 +350,7 @@ GtkWidget *make_track_lane(
 
     GtkWidget *wave = gtk_drawing_area_new();
     gtk_widget_set_size_request(wave, 2400, 220);
-    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(wave), draw_waveform, GUINT_TO_POINTER(seed), nullptr);
-
+gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(wave), draw_waveform, GUINT_TO_POINTER(track.waveformSeed), nullptr);
     gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(wave_scroll), wave);
     gtk_box_append(GTK_BOX(shell), wave_scroll);
 
@@ -461,6 +463,8 @@ void load_css()
 
 void activate(GtkApplication *application, gpointer)
 {
+   const ProjectViewModel project_model = tenacity::gnome_prototype::MakeMockProjectViewModel();
+
     GtkAdjustment *shared_adjustment =
         gtk_adjustment_new(0.0, 0.0, 2400.0, 24.0, 240.0, 800.0);
 
@@ -509,17 +513,18 @@ void activate(GtkApplication *application, gpointer)
     GtkWidget *project = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
     gtk_widget_add_css_class(project, "project-strip");
     gtk_widget_set_hexpand(project, TRUE);
-    gtk_box_append(GTK_BOX(project), label("16ABR_SAMPLE_PART1", "heading"));
-    gtk_box_append(GTK_BOX(project), label("Current project · 44.1 kHz · stereo · 32-bit float", "muted"));
+    gtk_box_append(GTK_BOX(project), label(project_model.title.c_str(), "heading"));
+    gtk_box_append(GTK_BOX(project), label(project_model.subtitle.c_str(), "muted"));
+
     gtk_box_append(GTK_BOX(top), project);
 
     GtkWidget *devices = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
     gtk_widget_add_css_class(devices, "device-box");
     gtk_box_append(GTK_BOX(devices), gtk_image_new_from_icon_name("audio-card-symbolic"));
-    gtk_box_append(GTK_BOX(devices), gtk_label_new("PipeWire"));
+    gtk_box_append(GTK_BOX(devices), gtk_label_new(project_model.audioHost.c_str()));    
     gtk_box_append(GTK_BOX(devices), gtk_separator_new(GTK_ORIENTATION_VERTICAL));
     gtk_box_append(GTK_BOX(devices), gtk_image_new_from_icon_name("audio-input-microphone-symbolic"));
-    gtk_box_append(GTK_BOX(devices), gtk_label_new("default"));
+    gtk_box_append(GTK_BOX(devices), gtk_label_new(project_model.inputDevice.c_str()));    
     gtk_box_append(GTK_BOX(top), devices);
 
     GtkWidget *work_area = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -537,10 +542,10 @@ void activate(GtkApplication *application, gpointer)
     GtkWidget *tracks_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_set_hexpand(tracks_box, TRUE);
     gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(editor_scroll), tracks_box);
-
-    gtk_box_append(GTK_BOX(tracks_box), make_track_lane("16ABR_SAMPLE_PART1", 1, 101, shared_adjustment));
-    gtk_box_append(GTK_BOX(tracks_box), make_track_lane("Voice - edited segment", 2, 501, shared_adjustment));
-    gtk_box_append(GTK_BOX(tracks_box), make_track_lane("Ambience / reference", 3, 901, shared_adjustment));
+    
+    for (const auto& track : project_model.tracks) {
+        gtk_box_append(GTK_BOX(tracks_box), make_track_lane(track, shared_adjustment));
+    }
 
     GtkWidget *add_track = gtk_button_new_with_label("Add Track");
     gtk_button_set_icon_name(GTK_BUTTON(add_track), "list-add-symbolic");
