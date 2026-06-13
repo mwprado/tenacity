@@ -761,6 +761,12 @@ else()
     message(STATUS "Nyquist support disabled")
 endif()
 
+option(TENACITY_GNOME_PROTOTYPE "Build experimental GTK4 GNOME prototype" OFF)
+
+if(TENACITY_GNOME_PROTOTYPE)
+   add_subdirectory(experiments/gnome-prototype)
+endif()
+
 # Manual Packaging
 
 set(MANUAL_PATH "" CACHE STRING "Path to the manual to package DMG and InnoSetup targets with")

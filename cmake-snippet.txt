@@ -1,0 +1,7 @@
+# Add this inside src/CMakeLists.txt in the existing:
+# set( SOURCES PRIVATE ... )
+#
+# Suggested location: near ProjectWindow.cpp / ProjectWindow.h or TrackPanel.cpp / TrackPanel.h
+
+        ui-facade/TenacityGuiFacade.cpp
+        ui-facade/TenacityGuiFacade.h
