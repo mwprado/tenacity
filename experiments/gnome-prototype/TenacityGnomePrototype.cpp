@@ -15,6 +15,15 @@ namespace {
 
 constexpr double PI = 3.14159265358979323846;
 
+constexpr int TRACK_CONTROL_WIDTH = 150;
+constexpr int TRACK_HEIGHT = 248;
+constexpr int TRACK_HEADER_HEIGHT = 48;
+constexpr int WAVEFORM_WIDTH = 2400;
+constexpr int WAVEFORM_HEIGHT = 220;
+constexpr int SIDE_DECK_EXPANDED_WIDTH = 200;
+constexpr int SIDE_DECK_COLLAPSED_WIDTH = 44;
+constexpr int SIDE_PANEL_WIDTH = 156;
+
 const char *CSS = R"CSS(
 .window-root {
     background: @window_bg_color;
@@ -269,7 +278,7 @@ GtkWidget *make_track_controls()
 {
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 7);
     gtk_widget_add_css_class(box, "track-control-panel");
-    gtk_widget_set_size_request(box, 218, 200);
+    gtk_widget_set_size_request(box, TRACK_CONTROL_WIDTH, 200);
 
     gtk_box_append(GTK_BOX(box), label("Stereo · 44.1 kHz", "muted"));
     gtk_box_append(GTK_BOX(box), label("32-bit float", "muted"));
@@ -277,8 +286,10 @@ GtkWidget *make_track_controls()
     GtkWidget *buttons = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
     GtkWidget *mute = gtk_toggle_button_new_with_label("Mute");
     GtkWidget *solo = gtk_toggle_button_new_with_label("Solo");
-    gtk_widget_set_hexpand(mute, TRUE);
-    gtk_widget_set_hexpand(solo, TRUE);
+    gtk_widget_set_hexpand(mute, FALSE);
+gtk_widget_set_hexpand(solo, FALSE);
+gtk_widget_set_size_request(mute, 72, -1);
+gtk_widget_set_size_request(solo, 72, -1);
     gtk_box_append(GTK_BOX(buttons), mute);
     gtk_box_append(GTK_BOX(buttons), solo);
     gtk_box_append(GTK_BOX(box), buttons);
@@ -311,16 +322,18 @@ GtkWidget *make_track_lane(
     gtk_widget_add_css_class(shell, "track-shell");
     gtk_widget_set_hexpand(shell, TRUE);
     gtk_widget_set_vexpand(shell, FALSE);
-    gtk_widget_set_size_request(shell, -1, 248);
+    gtk_widget_set_size_request(shell, -1, TRACK_HEIGHT);
 
     GtkWidget *left = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_add_css_class(left, "track-left-column");
-    gtk_widget_set_size_request(left, 218, 248);
+    gtk_widget_set_size_request(left, TRACK_CONTROL_WIDTH, TRACK_HEIGHT);
+    gtk_widget_set_hexpand(left, FALSE);
+    gtk_widget_set_halign(left, GTK_ALIGN_START);
     gtk_box_append(GTK_BOX(shell), left);
 
     GtkWidget *header = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
     gtk_widget_add_css_class(header, "track-header");
-    gtk_widget_set_size_request(header, 218, 48);
+    gtk_widget_set_size_request(header, TRACK_CONTROL_WIDTH, TRACK_HEADER_HEIGHT);
     gtk_box_append(GTK_BOX(left), header);
 
     GtkWidget *header_top = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
@@ -344,12 +357,12 @@ GtkWidget *make_track_lane(
     gtk_widget_add_css_class(wave_scroll, "waveform-scroll");
     gtk_widget_set_hexpand(wave_scroll, TRUE);
     gtk_widget_set_vexpand(wave_scroll, FALSE);
-    gtk_widget_set_size_request(wave_scroll, -1, 248);
+    gtk_widget_set_size_request(wave_scroll, -1, TRACK_HEIGHT);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wave_scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
     gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(wave_scroll), shared_adjustment);
 
     GtkWidget *wave = gtk_drawing_area_new();
-    gtk_widget_set_size_request(wave, 2400, 220);
+    gtk_widget_set_size_request(wave, WAVEFORM_WIDTH, WAVEFORM_HEIGHT);
 gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(wave), draw_waveform, GUINT_TO_POINTER(track.waveformSeed), nullptr);
     gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(wave_scroll), wave);
     gtk_box_append(GTK_BOX(shell), wave_scroll);
@@ -368,14 +381,14 @@ void on_side_panel_toggled(GtkToggleButton *button, gpointer user_data)
     const gboolean expanded = gtk_toggle_button_get_active(button);
 
     gtk_widget_set_visible(state->panel, expanded);
-    gtk_widget_set_size_request(state->deck, expanded ? 200 : 44, -1);
+    gtk_widget_set_size_request(state->deck, expanded ? SIDE_DECK_EXPANDED_WIDTH : SIDE_DECK_COLLAPSED_WIDTH, -1);
 }
 
 GtkWidget *make_side_deck()
 {
     GtkWidget *deck = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_add_css_class(deck, "side-deck");
-    gtk_widget_set_size_request(deck, 200, -1);
+    gtk_widget_set_size_request(deck, SIDE_DECK_EXPANDED_WIDTH, -1);
     gtk_widget_set_hexpand(deck, FALSE);
     gtk_widget_set_vexpand(deck, TRUE);
 
@@ -390,7 +403,7 @@ GtkWidget *make_side_deck()
 
     GtkWidget *panel = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
     gtk_widget_add_css_class(panel, "side-deck-body");
-    gtk_widget_set_size_request(panel, 156, -1);
+    gtk_widget_set_size_request(panel, SIDE_PANEL_WIDTH, -1);
     gtk_box_append(GTK_BOX(deck), panel);
 
     gtk_box_append(GTK_BOX(panel), label("Properties", "heading"));
@@ -466,10 +479,10 @@ void activate(GtkApplication *application, gpointer)
    const ProjectViewModel project_model = tenacity::gnome_prototype::MakeMockProjectViewModel();
 
     GtkAdjustment *shared_adjustment =
-        gtk_adjustment_new(0.0, 0.0, 2400.0, 24.0, 240.0, 800.0);
+        gtk_adjustment_new(0.0, 0.0, (float) WAVEFORM_WIDTH, 24.0, 240.0, 800.0);
 
     GtkWidget *window = adw_application_window_new(GTK_APPLICATION(application));
-    gtk_window_set_title(GTK_WINDOW(window), "Tenacity GNOME Prototype");
+    gtk_window_set_title(GTK_WINDOW(window), "Tenacity GNOME Prototype teste");
     gtk_window_set_default_size(GTK_WINDOW(window), 1320, 760);
     gtk_widget_set_size_request(window, 980, 560);
 
@@ -477,7 +490,7 @@ void activate(GtkApplication *application, gpointer)
     adw_application_window_set_content(ADW_APPLICATION_WINDOW(window), toolbar_view);
 
     GtkWidget *header = adw_header_bar_new();
-    GtkWidget *title = gtk_label_new("Tenacity");
+    GtkWidget *title = gtk_label_new("Tenacity teste2");
     gtk_widget_add_css_class(title, "heading");
     adw_header_bar_set_title_widget(ADW_HEADER_BAR(header), title);
     adw_toolbar_view_add_top_bar(ADW_TOOLBAR_VIEW(toolbar_view), header);
