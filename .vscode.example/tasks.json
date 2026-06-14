@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build tenacity-gnome-prototype",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build",
+        "build-gnome-prototype",
+        "--target",
+        "tenacity-gnome-prototype",
+        "-j8"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Run tenacity-gnome-prototype",
+      "type": "shell",
+      "command": "${workspaceFolder}/build-gnome-prototype/Debug/tenacity-gnome-prototype",
+      "dependsOn": "Build tenacity-gnome-prototype",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

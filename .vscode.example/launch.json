@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug tenacity-gnome-prototype",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-gnome-prototype/Debug/tenacity-gnome-prototype",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Build tenacity-gnome-prototype",
+      "terminal": "integrated",
+      "stopOnEntry": false
+    }
+  ]
+}

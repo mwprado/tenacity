@@ -1,0 +1,25 @@
+{
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.buildDirectory": "${workspaceFolder}/build-gnome-prototype",
+  "cmake.generator": "Ninja",
+  "cmake.configureOnOpen": false,
+  "cmake.buildBeforeRun": true,
+  "cmake.parallelJobs": 8,
+
+  "C_Cpp.intelliSenseEngine": "disabled",
+
+  "clangd.arguments": [
+    "--background-index",
+    "--clang-tidy",
+    "--compile-commands-dir=build-gnome-prototype"
+  ],
+
+  "files.associations": {
+    "*.h": "cpp",
+    "*.hpp": "cpp",
+    "*.hh": "cpp",
+    "*.cpp": "cpp",
+    "*.cxx": "cpp",
+    "*.cc": "cpp"
+  }
+}
