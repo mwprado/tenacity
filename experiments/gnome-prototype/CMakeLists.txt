@@ -16,6 +16,8 @@ add_executable(tenacity-gnome-prototype
    TenacityGnomePrototype.cpp
    PrototypeModel.cpp
    PrototypeModel.h
+   GnomeTrackView.cpp
+   GnomeTrackView.h
 )
 
 
