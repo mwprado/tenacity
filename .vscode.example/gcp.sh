@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 gcp() {
     if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         echo "Erro: este diretório não está dentro de um repositório Git."
@@ -14,7 +16,7 @@ gcp() {
 
     read -r -p "Mensagem do commit: " msg
 
-    if [ -z "$msg" ]; then
+    if [ -z "${msg// }" ]; then
         echo "Commit cancelado: mensagem vazia."
         return 1
     fi
@@ -36,3 +38,5 @@ gcp() {
     git commit -m "$msg" || return 1
     git push
 }
+
+gcp "$@"

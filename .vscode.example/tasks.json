@@ -34,18 +34,19 @@
       "group": "test",
       "problemMatcher": []
     },
-{
-  "label": "Git add commit push",
-  "type": "shell",
-  "command": "bash",
-  "args": [
-    "-lc",
-    "read -p 'Mensagem do commit: ' msg; git add . && git commit -m \"$msg\" && git push"
-  ],
-  "options": {
-    "cwd": "${workspaceFolder}"
-  },
-  "problemMatcher": []
-}
+    {
+      "label": "Git add commit push",
+      "type": "shell",
+      "command": "${workspaceFolder}/.vscode/gcp.sh",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
   ]
 }
