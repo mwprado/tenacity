@@ -4,6 +4,7 @@ Tenacity GUI Facade
 
 **********************************************************************/
 
+
 #include "ui-facade/TenacityGuiFacade.h"
 
 #include "ProjectWindow.h"
