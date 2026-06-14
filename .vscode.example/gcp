@@ -1,0 +1,38 @@
+gcp() {
+    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        echo "Erro: este diretório não está dentro de um repositório Git."
+        return 1
+    fi
+
+    echo "Branch atual:"
+    git branch --show-current
+    echo
+
+    echo "Arquivos alterados:"
+    git status --short
+    echo
+
+    read -r -p "Mensagem do commit: " msg
+
+    if [ -z "$msg" ]; then
+        echo "Commit cancelado: mensagem vazia."
+        return 1
+    fi
+
+    read -r -p "Confirmar git add ., commit e push? [s/N] " confirm
+
+    if [ "$confirm" != "s" ] && [ "$confirm" != "S" ]; then
+        echo "Cancelado."
+        return 0
+    fi
+
+    git add .
+
+    if git diff --cached --quiet; then
+        echo "Nada para commitar."
+        return 0
+    fi
+
+    git commit -m "$msg" || return 1
+    git push
+}
