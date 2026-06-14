@@ -5,7 +5,7 @@
       "name": "Debug tenacity-gnome-prototype",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/build-gnome-prototype/Debug/tenacity-gnome-prototype",
+      "program": "${workspaceFolder}/build-gnome-prototype/tenacity-gnome-prototype",
       "args": [],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build tenacity-gnome-prototype",

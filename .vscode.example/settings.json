@@ -1,5 +1,5 @@
 {
-  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.sourceDirectory": "${workspaceFolder}/experiments/gnome-prototype",
   "cmake.buildDirectory": "${workspaceFolder}/build-gnome-prototype",
   "cmake.generator": "Ninja",
   "cmake.configureOnOpen": false,
@@ -11,7 +11,7 @@
   "clangd.arguments": [
     "--background-index",
     "--clang-tidy",
-    "--compile-commands-dir=build-gnome-prototype"
+    "--compile-commands-dir=${workspaceFolder}/build-gnome-prototype"
   ],
 
   "files.associations": {

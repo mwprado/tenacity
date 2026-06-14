@@ -26,7 +26,7 @@
     {
       "label": "Run tenacity-gnome-prototype",
       "type": "shell",
-      "command": "${workspaceFolder}/build-gnome-prototype/Debug/tenacity-gnome-prototype",
+      "command": "${workspaceFolder}/build-gnome-prototype/tenacity-gnome-prototype",
       "dependsOn": "Build tenacity-gnome-prototype",
       "options": {
         "cwd": "${workspaceFolder}"
